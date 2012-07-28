@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Description of Template2
+ * Template2 - A Simple Templating Engine for PHP
  *
  * @author samuel
+ * @package Template2
  */
 class Template2 {
 
@@ -15,6 +16,8 @@ class Template2 {
 	var $scripts;
 	var $tags;
 
+	var $sections;
+	var $currentSection;
 
 	public function __construct() {
 
@@ -45,6 +48,27 @@ class Template2 {
 			echo $this->template;
 
 		return $this->template;
+	}
+
+	public function startSection($section) {
+		$this->currentSection = $section;
+		ob_start();
+	}
+
+	public function endSection($section) {
+		$content = ob_get_clean();
+		if(isset($this->sections[$section])) {
+			$this->sections[$section] .= $content;
+		} else {
+			$this->sections[$section] = $content;
+		}
+	}
+
+	public function getSection($section) {
+		if(isset($this->sections[$section])) {
+			return $this->sections[$section];
+		}
+		return '';
 	}
 	/**
 	 * Creates a general tag with attributes.
